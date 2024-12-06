@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, SPU
+from .models import Category, SPU, SKU
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -45,6 +45,36 @@ class SPUAdmin(admin.ModelAdmin):
         }),
         ('分类信息', {
             'fields': ('category', 'sales_channel')
+        }),
+        ('其他信息', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+
+@admin.register(SKU)
+class SKUAdmin(admin.ModelAdmin):
+    list_display = ['id', 'sku_code', 'sku_name', 'provider_name', 'unit_price', 
+                   'plating_process', 'color', 'spu', 'created_at']
+    list_filter = ['provider_name', 'plating_process', 'color', 'spu']
+    search_fields = ['id', 'sku_code', 'sku_name', 'provider_name', 'plating_process', 'color']
+    ordering = ['-id']
+    raw_id_fields = ['spu']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    list_per_page = 20
+
+    fieldsets = (
+        ('基本信息', {
+            'fields': ('id', 'sku_code', 'sku_name', 'provider_name', 'spu')
+        }),
+        ('价格和重量', {
+            'fields': ('unit_price', 'weight')
+        }),
+        ('规格信息', {
+            'fields': ('plating_process', 'color', 'material', 'length', 'width', 'height', 'other_dimensions')
+        }),
+        ('图片信息', {
+            'fields': ('img_url',)
         }),
         ('其他信息', {
             'fields': ('created_at', 'updated_at')

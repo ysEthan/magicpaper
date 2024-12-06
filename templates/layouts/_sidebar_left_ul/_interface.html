@@ -1,10 +1,39 @@
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle {% if '/gallery/' in request.path_info %}show active{% endif %}" 
-       href="#navbar-gallery" data-bs-toggle="dropdown" data-bs-auto-close="false" 
-       role="button" aria-expanded="{% if '/gallery/' in request.path_info %}true{% else %}false{% endif %}">
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'gallery:category_list' %}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-category" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 4h6v6h-6z"></path>
+                <path d="M14 4h6v6h-6z"></path>
+                <path d="M4 14h6v6h-6z"></path>
+                <path d="M14 14h6v6h-6z"></path>
+            </svg>
+        </span>
+        <span class="nav-link-title">
+            类目管理
+        </span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'gallery:spu_list' %}">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-box" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5"></path>
+                <path d="M12 12l8 -4.5"></path>
+                <path d="M12 12l0 9"></path>
+                <path d="M12 12l-8 -4.5"></path>
+            </svg>
+        </span>
+        <span class="nav-link-title">
+            SPU管理
+        </span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'gallery:sku_list' %}">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-package" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5"></path>
                 <path d="M12 12l8 -4.5"></path>
@@ -13,29 +42,8 @@
                 <path d="M16 5.25l-8 4.5"></path>
             </svg>
         </span>
-        <span class="nav-link-title">Gallery</span>
+        <span class="nav-link-title">
+            SKU管理
+        </span>
     </a>
-
-    <div class="dropdown-menu {% if '/gallery/' in request.path_info %}show{% endif %}" id="navbar-gallery">
-        <div class="dropdown-menu-columns">
-            <div class="dropdown-menu-column">
-                <a class="dropdown-item {% if '/gallery/category' in request.path_info %}active{% endif %}" 
-                   href="{% url 'gallery:category_list' %}">
-                    类目管理
-                </a>
-                <a class="dropdown-item {% if '/gallery/spu' in request.path_info %}active{% endif %}" 
-                   href="{% url 'gallery:spu_list' %}">
-                    SPU管理
-                </a>
-                <a class="dropdown-item {% if '/gallery/sku' in request.path_info %}active{% endif %}" 
-                   href="#">
-                    SKU管理
-                </a>
-                <a class="dropdown-item {% if '/gallery/material' in request.path_info %}active{% endif %}" 
-                   href="#">
-                    素材管理
-                </a>
-            </div>
-        </div>
-    </div>
 </li>

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, SPU
+from .models import Category, SPU, SKU
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -43,3 +43,33 @@ class SPUForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields['spu_code'].widget.attrs['readonly'] = True
             self.fields['spu_code'].widget.attrs['class'] = 'form-control bg-light'
+
+
+class SKUForm(forms.ModelForm):
+    class Meta:
+        model = SKU
+        fields = ['sku_code', 'sku_name', 'provider_name', 'unit_price', 'weight',
+                 'plating_process', 'color', 'length', 'width', 'height', 
+                 'other_dimensions', 'img_url', 'material', 'spu']
+        widgets = {
+            'sku_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'sku_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'provider_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
+            'plating_process': forms.TextInput(attrs={'class': 'form-control'}),
+            'color': forms.Select(attrs={'class': 'form-select'}),
+            'length': forms.NumberInput(attrs={'class': 'form-control'}),
+            'width': forms.NumberInput(attrs={'class': 'form-control'}),
+            'height': forms.NumberInput(attrs={'class': 'form-control'}),
+            'other_dimensions': forms.TextInput(attrs={'class': 'form-control'}),
+            'material': forms.TextInput(attrs={'class': 'form-control'}),
+            'spu': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 如果是编辑模式（实例已存在），则SKU编码不可修改
+        if self.instance and self.instance.pk:
+            self.fields['sku_code'].widget.attrs['readonly'] = True
+            self.fields['sku_code'].widget.attrs['class'] = 'form-control bg-light'

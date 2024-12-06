@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db.models import ProtectedError
-from .models import Category, SPU
-from .forms import CategoryForm, SPUForm
+from .models import Category, SPU, SKU
+from .forms import CategoryForm, SPUForm, SKUForm
 
 @login_required
 def category_list(request):
@@ -137,4 +137,60 @@ def spu_delete(request, pk):
     except Exception as e:
         messages.error(request, f'删除失败：{str(e)}')
     return redirect('gallery:spu_list')
+
+@login_required
+def sku_list(request):
+    """SKU列表页面"""
+    skus = SKU.objects.all().select_related('spu')
+    return render(request, 'gallery/sku/list.html', {
+        'skus': skus
+    })
+
+@login_required
+def sku_add(request):
+    """添加SKU页面"""
+    if request.method == 'POST':
+        form = SKUForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'SKU添加成功！')
+            return redirect('gallery:sku_list')
+    else:
+        form = SKUForm()
+    
+    return render(request, 'gallery/sku/form.html', {
+        'form': form,
+        'title': '添加SKU',
+        'submit_text': '添加'
+    })
+
+@login_required
+def sku_update(request, pk):
+    """修改SKU页面"""
+    sku = get_object_or_404(SKU, pk=pk)
+    if request.method == 'POST':
+        form = SKUForm(request.POST, request.FILES, instance=sku)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'SKU修改成功！')
+            return redirect('gallery:sku_list')
+    else:
+        form = SKUForm(instance=sku)
+    
+    return render(request, 'gallery/sku/form.html', {
+        'form': form,
+        'title': '修改SKU',
+        'submit_text': '保存'
+    })
+
+@login_required
+def sku_delete(request, pk):
+    """删除SKU"""
+    sku = get_object_or_404(SKU, pk=pk)
+    try:
+        sku.delete()
+        messages.success(request, 'SKU删除成功！')
+    except Exception as e:
+        messages.error(request, f'删除失败：{str(e)}')
+    return redirect('gallery:sku_list')
 

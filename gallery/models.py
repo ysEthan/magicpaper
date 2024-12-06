@@ -12,7 +12,7 @@ class Category(models.Model):
     category_name_en = models.CharField(max_length=100, verbose_name='英文名称')
     category_name_zh = models.CharField(max_length=100, verbose_name='中文名称')
     description = models.TextField(verbose_name='描述', blank=True, null=True)
-    image = models.ImageField(upload_to='categories/', verbose_name='分类图片', blank=True, null=True)
+    image = models.ImageField(upload_to='images', verbose_name='分类图片', blank=True, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name='父类目', 
                              related_name='children', blank=True, null=True)
     rank_id = models.IntegerField(verbose_name='排序ID', default=0)
@@ -86,3 +86,55 @@ class SPU(models.Model):
 
     def __str__(self):
         return f"{self.spu_code} - {self.spu_name}"
+
+
+class SKU(models.Model):
+    COLOR_CHOICES = (
+        ('gold', '金色'),
+        ('silver', '银色'),
+        ('rose_gold', '玫瑰金'),
+        ('black', '黑色'),
+        ('white', '白色'),
+        ('blue', '蓝色'),
+        ('red', '红色'),
+        ('green', '绿色'),
+        ('purple', '紫色'),
+        ('yellow', '黄色'),
+        ('other', '其他'),
+    )
+
+    id = models.BigAutoField(primary_key=True, verbose_name='主键ID')
+    sku_code = models.CharField(max_length=50, unique=True, verbose_name='SKU编码')
+    sku_name = models.CharField(max_length=200, verbose_name='SKU名称')
+    provider_name = models.CharField(max_length=100, verbose_name='供应商名称')
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='单价')
+    weight = models.PositiveIntegerField(verbose_name='重量(g)')
+    plating_process = models.CharField(max_length=100, verbose_name='电镀工艺')
+    color = models.CharField(
+        max_length=20, 
+        choices=COLOR_CHOICES,
+        verbose_name='颜色'
+    )
+    length = models.PositiveIntegerField(verbose_name='长度(mm)')
+    width = models.PositiveIntegerField(verbose_name='宽度(mm)')
+    height = models.PositiveIntegerField(verbose_name='高度(mm)')
+    other_dimensions = models.CharField(max_length=50, verbose_name='其他尺寸', blank=True, null=True)
+    img_url = models.ImageField(upload_to='images', verbose_name='SKU图片', blank=True, null=True)
+    material = models.CharField(max_length=100, verbose_name='材质')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+    spu = models.ForeignKey(
+        SPU,
+        on_delete=models.CASCADE,
+        verbose_name='所属SPU',
+        related_name='skus'
+    )
+
+    class Meta:
+        verbose_name = 'SKU'
+        verbose_name_plural = 'SKU'
+        ordering = ['-id']
+        db_table = 'gallery_sku'
+
+    def __str__(self):
+        return f"{self.sku_code} - {self.sku_name}"
