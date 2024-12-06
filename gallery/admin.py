@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category
+from .models import Category, SPU
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -27,3 +27,26 @@ class CategoryAdmin(admin.ModelAdmin):
     def get_full_path(self, obj):
         return obj.get_full_path()
     get_full_path.short_description = '完整路径'
+
+
+@admin.register(SPU)
+class SPUAdmin(admin.ModelAdmin):
+    list_display = ['id', 'spu_code', 'spu_name', 'sales_channel', 'category', 'created_at']
+    list_filter = ['sales_channel', 'category']
+    search_fields = ['id', 'spu_code', 'spu_name', 'spu_remark']
+    ordering = ['-id']
+    raw_id_fields = ['category']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    list_per_page = 20
+
+    fieldsets = (
+        ('基本信息', {
+            'fields': ('id', 'spu_code', 'spu_name', 'spu_remark')
+        }),
+        ('分类信息', {
+            'fields': ('category', 'sales_channel')
+        }),
+        ('其他信息', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )

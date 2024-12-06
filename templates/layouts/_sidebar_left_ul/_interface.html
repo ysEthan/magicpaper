@@ -24,7 +24,7 @@
                     类目管理
                 </a>
                 <a class="dropdown-item {% if '/gallery/spu' in request.path_info %}active{% endif %}" 
-                   href="#">
+                   href="{% url 'gallery:spu_list' %}">
                     SPU管理
                 </a>
                 <a class="dropdown-item {% if '/gallery/sku' in request.path_info %}active{% endif %}" 

@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %}类目管理{% endblock %}
+{% block title %}SPU管理{% endblock %}
 
 {% block content %}
 <div class="container-xl">
@@ -36,17 +36,17 @@
     <div class="page-header d-print-none">
         <div class="row align-items-center">
             <div class="col">
-                <h2 class="page-title">类目管理</h2>
+                <h2 class="page-title">SPU管理</h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
                 <div class="btn-list">
-                    <a href="{% url 'gallery:category_add' %}" class="btn btn-primary">
+                    <a href="{% url 'gallery:spu_add' %}" class="btn btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <line x1="12" y1="5" x2="12" y2="19" />
                             <line x1="5" y1="12" x2="19" y2="12" />
                         </svg>
-                        添加类目
+                        添加SPU
                     </a>
                 </div>
             </div>
@@ -60,34 +60,26 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>中文名称</th>
-                                <th>英文名称</th>
-                                <th>层级</th>
-                                <th>排序</th>
-                                <th>状态</th>
+                                <th>SPU编码</th>
+                                <th>SPU名称</th>
+                                <th>销售渠道</th>
+                                <th>所属类目</th>
                                 <th>创建时间</th>
                                 <th class="w-1"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for category in categories %}
+                            {% for spu in spus %}
                             <tr>
-                                <td>{{ category.id }}</td>
-                                <td>{{ category.category_name_zh }}</td>
-                                <td>{{ category.category_name_en }}</td>
-                                <td>{{ category.level }}</td>
-                                <td>{{ category.rank_id }}</td>
-                                <td>
-                                    {% if category.status == 1 %}
-                                        <span class="badge bg-success">启用</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">禁用</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ category.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>{{ spu.id }}</td>
+                                <td>{{ spu.spu_code }}</td>
+                                <td>{{ spu.spu_name }}</td>
+                                <td>{{ spu.get_sales_channel_display }}</td>
+                                <td>{{ spu.category.category_name_zh }}</td>
+                                <td>{{ spu.created_at|date:"Y-m-d H:i" }}</td>
                                 <td>
                                     <div class="btn-list flex-nowrap">
-                                        <a href="{% url 'gallery:category_update' category.id %}" class="btn btn-icon btn-primary" title="编辑">
+                                        <a href="{% url 'gallery:spu_update' spu.id %}" class="btn btn-icon btn-primary" title="编辑">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
@@ -97,7 +89,7 @@
                                         </a>
                                         <button type="button" class="btn btn-icon btn-danger" title="删除" 
                                                 data-bs-toggle="modal" 
-                                                data-bs-target="#modal-danger-{{ category.id }}">
+                                                data-bs-target="#modal-danger-{{ spu.id }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                 <path d="M4 7l16 0"></path>
@@ -109,7 +101,7 @@
                                         </button>
                                     </div>
                                     <!-- 删除确认对话框 -->
-                                    <div class="modal modal-blur fade" id="modal-danger-{{ category.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal modal-blur fade" id="modal-danger-{{ spu.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -121,7 +113,7 @@
                                                         <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
                                                     </svg>
                                                     <h3>确认删除</h3>
-                                                    <div class="text-muted">确定要删除类目"{{ category.category_name_zh }}"吗？</div>
+                                                    <div class="text-muted">确定要删除SPU"{{ spu.spu_name }}"吗？</div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <div class="w-100">
@@ -132,7 +124,7 @@
                                                                 </button>
                                                             </div>
                                                             <div class="col">
-                                                                <form action="{% url 'gallery:category_delete' category.id %}" method="POST" style="display: inline;">
+                                                                <form action="{% url 'gallery:spu_delete' spu.id %}" method="POST" style="display: inline;">
                                                                     {% csrf_token %}
                                                                     <button type="submit" class="btn btn-danger w-100">
                                                                         确认删除
@@ -149,7 +141,7 @@
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="8" class="text-center">暂无数据</td>
+                                <td colspan="7" class="text-center">暂无数据</td>
                             </tr>
                             {% endfor %}
                         </tbody>

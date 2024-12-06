@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import ProtectedError
+from django.core.exceptions import ValidationError
 
 class Category(models.Model):
     STATUS_CHOICES = (
@@ -35,3 +37,52 @@ class Category(models.Model):
         if self.parent:
             return f"{self.parent.get_full_path()} > {self.category_name_zh}"
         return self.category_name_zh
+
+    def delete(self, *args, **kwargs):
+        """重写删除方法，添加删除前检查"""
+        # 检查是否有子类目
+        if self.children.exists():
+            raise ValidationError('无法删除：该类目下还有子类目')
+        
+        # 检查是否有关联的SPU
+        if self.spus.exists():
+            raise ValidationError('无法删除：该类目下还有关联的SPU')
+            
+        super().delete(*args, **kwargs)
+
+
+class SPU(models.Model):
+    SALES_CHANNEL_CHOICES = (
+        (1, '线上商城'),
+        (2, '线下门店'),
+        (3, '电商平台'),
+        (4, '批发渠道'),
+        (5, '其他渠道'),
+    )
+
+    id = models.BigAutoField(primary_key=True, verbose_name='主键ID')
+    spu_code = models.CharField(max_length=50, unique=True, verbose_name='SPU编码')
+    spu_name = models.CharField(max_length=200, verbose_name='SPU名称')
+    spu_remark = models.TextField(verbose_name='SPU备注', blank=True, null=True)
+    sales_channel = models.IntegerField(
+        verbose_name='销售渠道',
+        choices=SALES_CHANNEL_CHOICES,
+        default=1
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        verbose_name='所属类目',
+        related_name='spus'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+
+    class Meta:
+        verbose_name = 'SPU'
+        verbose_name_plural = 'SPU'
+        ordering = ['-id']
+        db_table = 'gallery_spu'
+
+    def __str__(self):
+        return f"{self.spu_code} - {self.spu_name}"
